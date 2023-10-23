@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SoftCal</string>
+    <string name="enable">Enable</string>
+    <string name="keyboard_enabled">Keyboard is already enabled.</string>
+    <string name="manage_keyboard_intent_failed">
+        Failed to launch keyboard management intent, manually enable this.
+    </string>
 </resources>
