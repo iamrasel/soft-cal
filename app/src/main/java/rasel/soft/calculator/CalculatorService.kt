@@ -3,7 +3,6 @@ package rasel.soft.calculator
 import android.annotation.SuppressLint
 import android.inputmethodservice.InputMethodService
 import android.text.Editable
-import android.view.KeyEvent
 import android.view.View
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -26,34 +25,29 @@ class CalculatorService : InputMethodService() {
         listenKeyEvents(id = R.id.nine, str = "9")
         listenKeyEvents(id = R.id.zero, str = "0")
         listenKeyEvents(id = R.id.dot, str = ".")
+        listenKeyEvents(id = R.id.back)
+        listenKeyEvents(id = R.id.equals)
+        listenKeyEvents(id = R.id.operators)
         listenKeyEvents(id = R.id.clear)
-        listenKeyEvents(id = R.id.back, keycode = KeyEvent.KEYCODE_DEL)
-        listenKeyEvents(id = R.id.equals, keycode = KeyEvent.KEYCODE_NUMPAD_EQUALS)
-        listenKeyEvents(id = R.id.operators, keycode = KeyEvent.KEYCODE_PLUS)
 
         return layout
     }
 
-    private fun listenKeyEvents(id: Int = 0, str: String = "string", keycode: Int = 0) {
+    private fun listenKeyEvents(id: Int = 0, str: String = "string") {
         layout.findViewById<MaterialButton>(id).setOnClickListener {
             layout.findViewById<TextInputEditText>(R.id.inputs).apply {
-                if (id != R.id.clear && id != R.id.back && id != R.id.equals && id != R.id.operators) {
-                    text = text?.append(str)
-                } else if (id == R.id.clear) {
-                    text?.clear()
-                } else if (id == R.id.back) {
-                    text?.takeIf { it.isNotEmpty() }?.let {
+                when (id) {
+                    R.id.one, R.id.two, R.id.three, R.id.four, R.id.five, R.id.six,
+                    R.id.seven, R.id.eight, R.id.nine, R.id.zero, R.id.dot -> text = text?.append(str)
+                    R.id.back -> text?.takeIf { it.isNotEmpty() }?.let {
                         text = Editable.Factory.getInstance().newEditable(it.dropLast(1))
                         setSelection(it.length - 1)
                     }
-                } else if (id == R.id.equals) {
-                    // return the calculated result
-                } else if (id == R.id.operators) {
-                    // input mathematical operators
+                    R.id.equals -> return@setOnClickListener // return the calculated result
+                    R.id.operators -> return@setOnClickListener // input mathematical operators
+                    R.id.clear -> text?.clear()
                 }
             }
-
-            //this.sendDownUpKeyEvents(keycode)
         }
     }
 }
